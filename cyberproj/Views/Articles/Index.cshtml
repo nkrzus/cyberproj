@@ -1,0 +1,41 @@
+﻿@model List<Article>
+@{ ViewData["Title"] = "Artykuły"; }
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Artykuły</h2>
+    @if (User.Can(Permissions.ArticlesCreate))
+    {
+        <a asp-action="Create" class="btn btn-primary">Nowy artykuł</a>
+    }
+</div>
+
+@if (!Model.Any()) { <p class="text-muted">Brak artykułów do wyświetlenia.</p> }
+
+@foreach (var a in Model)
+{
+    bool canEdit = User.Can(Permissions.ArticlesEditAll) ||
+                   (User.Can(Permissions.ArticlesEditOwn) && a.AuthorId == User.UserId() && !a.IsPublished);
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">
+                @a.Title
+                @if (!a.IsPublished) { <span class="badge bg-secondary">Szkic</span> }
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">@a.AuthorLogin, @a.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</h6>
+            <p class="card-text" style="white-space: pre-line">@a.Content</p>
+            @if (canEdit) { <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-secondary">Edytuj</a> }
+            @if (User.Can(Permissions.ArticlesPublish))
+            {
+                <form asp-action="Publish" asp-route-id="@a.Id" method="post" class="d-inline">
+                    <button class="btn btn-sm btn-outline-success">@(a.IsPublished ? "Cofnij publikację" : "Opublikuj")</button>
+                </form>
+            }
+            @if (User.Can(Permissions.ArticlesDelete))
+            {
+                <form asp-action="Delete" asp-route-id="@a.Id" method="post" class="d-inline"
+                      onsubmit="return confirm('Usunąć artykuł?');">
+                    <button class="btn btn-sm btn-outline-danger">Usuń</button>
+                </form>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,27 @@
+﻿@model SettingsViewModel
+@{ ViewData["Title"] = "Ustawienia bezpieczeństwa"; }
+<div class="row"><div class="col-md-7">
+    <h2 class="mb-3">Ustawienia bezpieczeństwa</h2>
+    <form asp-action="Index" method="post">
+        <div class="mb-3">
+            <label asp-for="MinPasswordLength" class="form-label"></label>
+            <input asp-for="MinPasswordLength" type="number" class="form-control" />
+            <span asp-validation-for="MinPasswordLength" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="PassphrasePolicyEnabled" class="form-check-input" />
+            <label asp-for="PassphrasePolicyEnabled" class="form-check-label"></label>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PasswordValidityDays" class="form-label"></label>
+            <input asp-for="PasswordValidityDays" type="number" class="form-control" />
+            <span asp-validation-for="PasswordValidityDays" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SessionIdleMinutes" class="form-label"></label>
+            <input asp-for="SessionIdleMinutes" type="number" class="form-control" />
+            <span asp-validation-for="SessionIdleMinutes" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </form>
+</div></div>

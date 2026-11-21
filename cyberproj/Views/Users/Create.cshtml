@@ -1,0 +1,25 @@
+﻿@model CreateUserViewModel
+@{ ViewData["Title"] = "Nowy użytkownik"; }
+<div class="row"><div class="col-md-6">
+    <h2 class="mb-3">Nowy użytkownik</h2>
+    <p class="text-muted">Po zapisaniu system wygeneruje hasło jednorazowe (12 znaków, ważne 48 h).</p>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="Login" class="form-label">Login</label>
+            <input asp-for="Login" class="form-control" />
+            <span asp-validation-for="Login" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label">Imię i nazwisko</label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label">Rola</label>
+            <select asp-for="Role" asp-items="@(new SelectList(Roles.Assignable))" class="form-select"></select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Utwórz</button>
+        <a asp-action="Index" class="btn btn-link">Anuluj</a>
+    </form>
+</div></div>

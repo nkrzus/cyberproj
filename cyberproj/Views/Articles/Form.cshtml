@@ -1,0 +1,19 @@
+﻿@model ArticleViewModel
+@{ ViewData["Title"] = Model.Id == 0 ? "Nowy artykuł" : "Edycja artykułu"; }
+<div class="row"><div class="col-md-8">
+    <h2 class="mb-3">@ViewData["Title"]</h2>
+    <form method="post" asp-action="@(Model.Id == 0 ? "Create" : "Edit")" asp-route-id="@(Model.Id == 0 ? (int?)null : Model.Id)">
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Tytuł</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label">Treść</label>
+            <textarea asp-for="Content" rows="8" class="form-control"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+        <a asp-action="Index" class="btn btn-link">Anuluj</a>
+    </form>
+</div></div>

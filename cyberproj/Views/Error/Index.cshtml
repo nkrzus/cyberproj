@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Błąd";
+    int code = ViewBag.Code;
+}
+<h1>@code</h1>
+@switch (code)
+{
+    case 403:
+        <p class="lead">Brak uprawnień. Twoja rola nie pozwala na dostęp do tego zasobu.</p>
+        break;
+    case 404:
+        <p class="lead">Nie znaleziono strony lub zasobu.</p>
+        break;
+    case 400:
+        <p class="lead">Nieprawidłowe żądanie (np. brak lub błędny token antyforgery).</p>
+        break;
+    default:
+        <p class="lead">Wystąpił błąd.</p>
+        break;
+}
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Strona główna</a>

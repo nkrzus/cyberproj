@@ -1,0 +1,73 @@
+﻿@model List<AppUser>
+@{
+    ViewData["Title"] = "Użytkownicy";
+    bool canManage = User.Can(Permissions.UsersManage);
+    int myId = User.UserId();
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Użytkownicy</h2>
+    @if (canManage)
+    {
+        <a asp-action="Create" class="btn btn-primary">Dodaj użytkownika</a>
+    }
+</div>
+
+@if (TempData["Otp"] is string otp)
+{
+    <div class="alert alert-warning">
+        <strong>Hasło jednorazowe dla @TempData["OtpLogin"]:</strong>
+        <code class="fs-5 user-select-all">@otp</code><br />
+        Ważne do @TempData["OtpUntil"]. Wyświetlane tylko raz - przekaż je użytkownikowi bezpiecznym kanałem.
+    </div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+    <tr><th>Login</th><th>Imię i nazwisko</th><th>Rola</th><th>Status</th>@if (canManage) { <th>Akcje</th> }</tr>
+    </thead>
+    <tbody>
+    @foreach (var u in Model)
+    {
+        bool isAdminAcc = string.Equals(u.Login, AuthConstants.AdminLogin, StringComparison.OrdinalIgnoreCase);
+        <tr>
+            <td>@u.Login</td>
+            <td>@u.FullName</td>
+            <td>@u.Role</td>
+            <td>
+                @if (u.IsBlocked) { <span class="badge bg-danger">Zablokowany</span> }
+                else { <span class="badge bg-success">Aktywny</span> }
+                @if (u.MustChangePassword)
+                {
+                    <span class="badge bg-warning text-dark">Hasło jednorazowe</span>
+                }
+            </td>
+            @if (canManage)
+            {
+                <td>
+                    @if (!isAdminAcc)
+                    {
+                        <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-outline-secondary">Edytuj</a>
+                    }
+                    @if (u.Id != myId)
+                    {
+                        <form asp-action="ResetPassword" asp-route-id="@u.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Wygenerować nowe hasło jednorazowe dla @u.Login?');">
+                            <button class="btn btn-sm btn-outline-warning">Reset hasła</button>
+                        </form>
+                    }
+                    @if (!isAdminAcc && u.Id != myId)
+                    {
+                        <form asp-action="ToggleBlock" asp-route-id="@u.Id" method="post" class="d-inline">
+                            <button class="btn btn-sm btn-outline-dark">@(u.IsBlocked ? "Odblokuj" : "Zablokuj")</button>
+                        </form>
+                        <form asp-action="Delete" asp-route-id="@u.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Usunąć użytkownika @u.Login?');">
+                            <button class="btn btn-sm btn-outline-danger">Usuń</button>
+                        </form>
+                    }
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
